@@ -1,33 +1,45 @@
 <?php
 header("Content-Type: application/json");
-require_once("../../config/config.php");
-require_once("../../config/response.php");
+require_once __DIR__ . '/../../config/config.php';
 
-// Query: Get courses linked to users (mentors) via user_courses
-// We filter by role='mentor' to ensure we only get courses taught by mentors
 $sql = "
 SELECT 
-    c.id AS id, 
-    c.title AS course_name, 
-    u.full_name AS mentor_name, 
-    c.image_path AS cover_image, 
-    u.status AS mentor_online_status
-FROM user_courses uc
-JOIN courses c ON uc.course_id = c.id
-JOIN users u ON uc.user_id = u.id
-WHERE u.role = 'mentor'
+    c.id AS course_id,
+    c.title,
+    c.image_path,
+    c.rating,
+    c.rating_count,
+    u.full_name AS mentor_name,
+    u.status AS mentor_status
+FROM courses c
+JOIN user_courses uc 
+    ON uc.course_id = c.id
+JOIN users u 
+    ON u.id = uc.user_id AND u.role = 'mentor'
+ORDER BY c.created_at DESC
+LIMIT 10
 ";
 
-$result = $conn->query($sql);
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
 
 $courses = [];
 
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        $row['id'] = (int)$row['id'];
-        $courses[] = $row;
-    }
+while ($row = $result->fetch_assoc()) {
+    $courses[] = [
+        "id" => (int)$row["course_id"],
+        "course_name" => $row["title"],
+        "cover_image" => $row["image_path"],
+        "rating" => (float)$row["rating"],
+        "rating_count" => (int)$row["rating_count"],
+        "mentor_name" => $row["mentor_name"],
+        "mentor_online_status" => $row["mentor_status"]
+    ];
 }
 
-sendResponse(true, "Available courses", $courses);
-?>
+echo json_encode([
+    "success" => true,
+    "message" => "Courses fetched successfully",
+    "data" => $courses
+]);
