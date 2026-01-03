@@ -51,11 +51,21 @@ if ($method === 'POST') {
     // List Posts
     $skillFilter = $_GET['skill'] ?? null;
     
-    $sql = "SELECT p.*, u.full_name as author_name, u.avatar as author_avatar, u.role as author_role, s.name as skill_name
-            FROM posts p
-            JOIN users u ON p.user_id = u.id
-            LEFT JOIN skills s ON p.skill_id = s.id
-            WHERE 1=1";
+    $sql = "SELECT 
+            p.id,
+            p.post_type,
+            p.title,
+            p.description,
+            p.created_at,
+            u.full_name AS author_name,
+            u.profile_image AS author_avatar,
+            u.role AS author_role,
+            s.name AS skill_name
+        FROM posts p
+        JOIN users u ON p.user_id = u.id
+        LEFT JOIN skills s ON p.skill_id = s.id
+        WHERE 1=1";
+
             
     if ($skillFilter) {
         $sql .= " AND s.name LIKE ?";
