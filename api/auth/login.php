@@ -40,7 +40,7 @@ if ($email === '' || $password === '') {
 
 // -------------------- USER FETCH --------------------
 
-$sql = "SELECT id, full_name, email, password FROM users WHERE email = ?";
+$sql = "SELECT id, full_name, email, profile_image, password FROM users WHERE email = ?";
 $stmt = mysqli_prepare($conn, $sql);
 
 if (!$stmt) {
@@ -87,7 +87,8 @@ echo json_encode([
     "user" => [
         "id" => $user['id'],
         "full_name" => $user['full_name'],
-        "email" => $user['email']
+        "email" => $user['email'],
+        "profile_image" => $user['profile_image']
     ]
 ]);
 exit;
