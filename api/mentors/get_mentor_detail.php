@@ -27,6 +27,7 @@ SELECT
     u.rating,
     u.rating_count,
     u.created_at,
+    u.phone,
     s.name AS skill_name
 FROM users u
 JOIN user_skills us 
@@ -73,7 +74,8 @@ $data = [
     "experienceYears" => $experienceYears,
     "expertiseList" => $expertiseList,
     "image" => $row["profile_image"],
-    "status" => $row["status"]
+    "status" => $row["status"],
+    "phone" => $row["phone"]
 ];
 
 sendResponse(true, "Mentor details fetched successfully", $data);

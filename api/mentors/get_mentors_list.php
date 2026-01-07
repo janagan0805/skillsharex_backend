@@ -17,8 +17,6 @@ JOIN user_skills us
 JOIN skills s 
     ON s.id = us.skill_id
 WHERE u.role = 'mentor'
-ORDER BY u.rating DESC, u.rating_count DESC
-LIMIT 3
 ";
 
 $stmt = $conn->prepare($sql);
