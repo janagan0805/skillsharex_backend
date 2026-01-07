@@ -1,22 +1,21 @@
 <?php
-// Database configuration
+// config/db.php
 
-$DB_HOST = "localhost";
-$DB_USER = "root";
-$DB_PASS = "";
-$DB_NAME = "skillsharex"; // ⚠️ use your actual database name
+$host = 'localhost';
+$user = 'root';
+$password = '';
+$dbname = 'skillsharex'; // Assuming db name, can be changed
 
-// Create connection
-$conn = mysqli_connect($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
+$conn = new mysqli($host, $user, $password, $dbname);
 
-// Check connection
-if (!$conn) {
+if ($conn->connect_error) {
     die(json_encode([
         "status" => false,
-        "message" => "Database connection failed",
-        "error" => mysqli_connect_error()
+        "message" => "Database connection failed: " . $conn->connect_error,
+        "data" => null
     ]));
 }
 
-// Set charset (important for emojis & text)
-mysqli_set_charset($conn, "utf8mb4");
+// Set charset to utf8mb4
+$conn->set_charset("utf8mb4");
+?>

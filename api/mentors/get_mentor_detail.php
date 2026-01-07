@@ -15,6 +15,7 @@ if (!$mentorId) {
  We will fetch:
  - mentor basic info (users)
  - mentor skill (skills via user_skills)
+ - mentor phone (users table)
  - mentor rating & rating_count (users table)
 */
 
@@ -23,10 +24,12 @@ SELECT
     u.id,
     u.full_name,
     u.status,
+    u.phone,
     u.profile_image,
     u.rating,
     u.rating_count,
     u.created_at,
+    u.phone,
     s.name AS skill_name
 FROM users u
 JOIN user_skills us 
@@ -67,13 +70,15 @@ $data = [
     "id" => (int)$row["id"],
     "name" => $row["full_name"],
     "skill" => $row["skill_name"],
+    "phone" => $row["phone"],
     "rating" => (float)$row["rating"],
     "ratingCount" => (int)$row["rating_count"],
     "bio" => "Experienced mentor in " . $row["skill_name"] . " with real-world teaching experience.",
     "experienceYears" => $experienceYears,
     "expertiseList" => $expertiseList,
     "image" => $row["profile_image"],
-    "status" => $row["status"]
+    "status" => $row["status"],
+    "phone" => $row["phone"]
 ];
 
 sendResponse(true, "Mentor details fetched successfully", $data);
