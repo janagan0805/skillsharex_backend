@@ -44,7 +44,7 @@ if ($_FILES['image']['error'] !== 0) {
 
 $allowed = ['image/jpeg', 'image/png'];
 if (!in_array($_FILES['image']['type'], $allowed)) {
-    sendResponse(false, "Invalid image type");
+    sendResponse(false, "Invalid image type you f**k");
 
 }
 
