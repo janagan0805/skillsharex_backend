@@ -21,9 +21,7 @@ $sql = "
     SELECT 
         full_name AS name,
         role,
-        bio,
-        profile_image,
-        skills
+        profile_image
     FROM users
     WHERE id = ?
     LIMIT 1
@@ -46,17 +44,21 @@ if ($result->num_rows === 0) {
 
 $row = $result->fetch_assoc();
 
-// ✅ CONVERT SKILLS TO ARRAY
+// ✅ FETCH USER SKILLS
+$skillsSql = "
+    SELECT s.name
+    FROM user_skills us
+    JOIN skills s ON us.skill_id = s.id
+    WHERE us.user_id = ?
+";
+$skillsStmt = $conn->prepare($skillsSql);
+$skillsStmt->bind_param("i", $userId);
+$skillsStmt->execute();
+$skillsResult = $skillsStmt->get_result();
+
 $skillsArray = [];
-if (!empty($row['skills'])) {
-    // If stored as JSON
-    $decoded = json_decode($row['skills'], true);
-    if (is_array($decoded)) {
-        $skillsArray = $decoded;
-    } else {
-        // fallback: comma-separated
-        $skillsArray = explode(",", $row['skills']);
-    }
+while ($skillRow = $skillsResult->fetch_assoc()) {
+    $skillsArray[] = $skillRow['name'];
 }
 
 // ✅ FINAL RESPONSE
@@ -65,7 +67,6 @@ echo json_encode([
     "data" => [
         "name" => $row['name'],
         "role" => $row['role'],
-        "bio" => $row['bio'],
         "profile_image" => $row['profile_image'],
         "skills" => $skillsArray
     ]

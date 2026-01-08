@@ -10,6 +10,33 @@ ini_set('display_errors', 0);
 require_once(__DIR__ . "/../../config/config.php");
 require_once(__DIR__ . "/../../config/response.php");
 
+function fixImageOrientation($image, $filePath)
+{
+    if (!function_exists('exif_read_data')) {
+        return $image;
+    }
+
+    $exif = @exif_read_data($filePath);
+    if (!$exif || !isset($exif['Orientation'])) {
+        return $image;
+    }
+
+    switch ($exif['Orientation']) {
+        case 3:
+            $image = imagerotate($image, 180, 0);
+            break;
+        case 6:
+            $image = imagerotate($image, -90, 0);
+            break;
+        case 8:
+            $image = imagerotate($image, 90, 0);
+            break;
+    }
+
+    return $image;
+}
+
+
 if (!extension_loaded('gd')) {
     sendResponse(false, "Server Error: GD Extension is not enabled (required for image processing)");
 }
@@ -69,7 +96,7 @@ $oldImagePath = $userRow['profile_image']; // Get old image path
 $stmtUser->close();
 
 // Sanitize full name for filename
-$sanitized_name = preg_replace('/[^a-zA-Z0-9_-]/', '_', $fullName);
+$sanitized_name = preg_replace('/[^a-zA-Z0-9_-]/', '', $fullName);
 $fileName = $sanitized_name . "_" . $userId . ".png";
 $targetFile = $targetDir . $fileName;
 
@@ -87,6 +114,7 @@ $sourceImage = null;
 switch ($mimeType) {
     case 'image/jpeg':
         $sourceImage = imagecreatefromjpeg($tempFile);
+        $sourceImage = fixImageOrientation($sourceImage, $tempFile);
         break;
     case 'image/png':
         $sourceImage = imagecreatefrompng($tempFile);

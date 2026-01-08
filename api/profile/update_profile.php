@@ -21,8 +21,7 @@ if (!$userId) {
 // Fields to update
 $fullName = $input['full_name'] ?? null;
 $role = $input['role'] ?? null;
-$bio = $input['bio'] ?? null;
-$avatar = $input['avatar'] ?? null; // Optional URL string
+$profileImage = $input['profile_image'] ?? null; // Optional URL string
 
 // Build Dynamic Update Query
 $fields = [];
@@ -39,14 +38,9 @@ if ($role !== null) {
     $params[] = $role;
     $types .= "s";
 }
-if ($bio !== null) {
-    $fields[] = "bio=?";
-    $params[] = $bio;
-    $types .= "s";
-}
-if ($avatar !== null) {
-    $fields[] = "avatar=?";
-    $params[] = $avatar;
+if ($profileImage !== null) {
+    $fields[] = "profile_image=?";
+    $params[] = $profileImage;
     $types .= "s";
 }
 
