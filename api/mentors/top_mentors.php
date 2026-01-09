@@ -12,13 +12,13 @@ SELECT
     u.rating_count,
     s.name AS skill_name
 FROM users u
-JOIN user_skills us 
+LEFT JOIN user_skills us 
     ON us.user_id = u.id AND us.type = 'mentor'
-JOIN skills s 
+LEFT JOIN skills s 
     ON s.id = us.skill_id
 WHERE u.role = 'mentor'
 ORDER BY u.rating DESC, u.rating_count DESC
-LIMIT 3
+LIMIT 5
 ";
 
 $stmt = $conn->prepare($sql);
@@ -38,7 +38,7 @@ while ($row = $result->fetch_assoc()) {
             "imageUrl" => $row['profile_image'],
             "rating" => (float)$row['rating'],
             "rating_count" => (int)$row['rating_count'],
-            "skill" => $row['skill_name']
+            "skill" => $row['skill_name'] ?? ""
         ];
     }
 }
