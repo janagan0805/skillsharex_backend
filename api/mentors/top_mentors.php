@@ -17,6 +17,7 @@ LEFT JOIN user_skills us
 LEFT JOIN skills s 
     ON s.id = us.skill_id
 WHERE u.role = 'mentor'
+GROUP BY u.id
 ORDER BY u.rating DESC, u.rating_count DESC
 LIMIT 5
 ";
