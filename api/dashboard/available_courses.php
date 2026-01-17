@@ -12,10 +12,8 @@ SELECT
     u.full_name AS mentor_name,
     u.status AS mentor_status
 FROM courses c
-JOIN user_courses uc 
-    ON uc.course_id = c.id
 JOIN users u 
-    ON u.id = uc.user_id AND u.role = 'mentor'
+    ON u.id = c.user_id AND u.role = 'mentor'
 ORDER BY c.created_at DESC
 LIMIT 10
 ";

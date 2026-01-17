@@ -18,15 +18,14 @@ SELECT
     c.image_path,
     c.rating,
     c.rating_count,
+    c.status,
     u.id AS mentor_id,
     u.full_name AS mentor_name,
     u.status AS mentor_status,
     u.profile_image AS mentor_image
 FROM courses c
-JOIN user_courses uc 
-    ON uc.course_id = c.id
 JOIN users u 
-    ON u.id = uc.user_id AND u.role = 'mentor'
+    ON u.id = c.user_id AND u.role = 'mentor'
 WHERE c.id = ?
 LIMIT 1
 ";
@@ -44,6 +43,7 @@ if ($row = $result->fetch_assoc()) {
         "cover_image" => $row["image_path"],
         "rating" => (float)$row["rating"],
         "rating_count" => (int)$row["rating_count"],
+        "status" => $row["status"],
         "mentor" => [
             "id" => (int)$row["mentor_id"],
             "name" => $row["mentor_name"],
