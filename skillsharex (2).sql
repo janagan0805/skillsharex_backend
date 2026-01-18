@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 17, 2026 at 05:00 PM
+-- Generation Time: Jan 18, 2026 at 06:20 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -90,6 +90,20 @@ CREATE TABLE `messages` (
   `sender_id` int(11) NOT NULL,
   `receiver_id` int(11) NOT NULL,
   `message` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `password_resets`
+--
+
+CREATE TABLE `password_resets` (
+  `id` int(11) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `expiry` datetime NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -209,7 +223,7 @@ INSERT INTO `users` (`id`, `full_name`, `email`, `password`, `created_at`, `role
 (2, 'Gowtham', 'gowtham12@gmail.com', '$2y$10$zyvy15rm6dyDPFBnNGSR8uu2lS5cICyUEEBL5REmFMMoadcXXuQAO', '2025-12-24 15:14:04', 'mentor', 'uploads/profile/Gowtham_2.png', 'online', 4.6, 90, ''),
 (4, 'sibi', 'sibi@gmail.com', '$2y$10$tTF.SVGh20w957OEAdM/murxmO82i594/EFZnDiu2M13V4AOiB3rm', '2025-12-25 13:53:02', 'mentor', 'uploads/profile/sibi.png', 'online', 4.2, 60, ''),
 (5, 'Ashwin', 'ash@gmail.com', '$2y$10$36Lp6TREPXdO7TdC7CQJpuZF/VtcdQJuxY5h6PgCTubgR/1qoM8m2', '2025-12-27 04:09:50', 'mentor', 'uploads/profile/ashwin.png', 'offline', 4.0, 90, '6380067133'),
-(8, 'saran', 'sarankarthick2011@gmail.com', '$2y$10$PDV2BlagOIjKXNKR9xv/OOIJk.6OaAcZYxekLbkHC2Cjr4gUpeWh6', '2025-12-31 06:28:52', 'mentor', 'uploads/profile/saran_8.png', 'online', 4.7, 150, '7904780297'),
+(8, 'saran', 'sarankarthick2011@gmail.com', '$2y$10$6EKwTZbEjz..8nMi8wyveOLBnkXdGmcTOpUpIhnp.n7w7JaJsZoeW', '2025-12-31 06:28:52', 'mentor', 'uploads/profile/saran_8.png', 'offline', 4.7, 150, '7904780297'),
 (11, 'Dhana', 'asskrvsdhana@gmail.com', '$2y$10$Bd1chlJRFYG9YvMOwMWiu.qX0H2F6up9rWIRKccw/Zl3d.GFCb3Zi', '2026-01-07 04:32:05', 'mentor', NULL, 'online', 4.0, 100, '9342244899'),
 (13, 'Ashok B', 'ashok@gmail.com', '$2y$10$TbUQr1atOoceSFw3gZNEGuPGmtLsKvgROEteMwhGiSb0cfEfSQr4q', '2026-01-09 01:57:03', 'mentor', 'uploads/profile/AshokB_13.png', 'offline', 4.8, 80, '8778910594'),
 (14, 'karthik s', 'karthik@gmail.com', '$2y$10$A/A4LZJEnTVj0/.Tgel.GeRKTBEu7At7IRSwGv25i7NpRoskcjw42', '2026-01-09 02:37:22', 'mentor', 'uploads/profile/karthiks_14.png', 'offline', 4.0, 85, '8794652398'),
@@ -271,6 +285,14 @@ ALTER TABLE `messages`
   ADD KEY `receiver_id` (`receiver_id`);
 
 --
+-- Indexes for table `password_resets`
+--
+ALTER TABLE `password_resets`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `token` (`token`),
+  ADD KEY `email` (`email`);
+
+--
 -- Indexes for table `posts`
 --
 ALTER TABLE `posts`
@@ -327,6 +349,12 @@ ALTER TABLE `courses`
 --
 ALTER TABLE `messages`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `password_resets`
+--
+ALTER TABLE `password_resets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `posts`

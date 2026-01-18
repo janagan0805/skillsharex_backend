@@ -34,46 +34,56 @@ try {
     // - Order by created_at DESC
     // - Limit 20
     // - post_content_snippet = first 120 chars
-    
+
+    // Get current user_id from query param to check 'is_liked' status
+    $current_user_id = isset($_GET['user_id']) ? (int) $_GET['user_id'] : 0;
+
     $sqlPosts = "
         SELECT 
             p.id AS post_id,
-            p.post_type,
+            p.topic AS post_type,
             u.full_name AS user_name,
             u.profile_image AS user_avatar_url,
             p.title AS post_title,
-            SUBSTRING(p.description, 1, 120) AS post_content_snippet,
-            p.created_at AS timestamp
-        FROM posts p
+            p.image_path,
+            SUBSTRING(p.content, 1, 120) AS post_content_snippet,
+            p.created_at AS timestamp,
+            COUNT(DISTINCT l.id) AS like_count,
+            COUNT(DISTINCT c.id) AS comment_count,
+            MAX(CASE WHEN l.user_id = ? THEN 1 ELSE 0 END) AS is_liked
+        FROM community_posts p
         JOIN users u ON p.user_id = u.id
+        LEFT JOIN post_likes l ON p.id = l.post_id
+        LEFT JOIN post_comments c ON p.id = c.post_id
+        GROUP BY p.id
         ORDER BY p.created_at DESC
         LIMIT 20
     ";
 
     $stmtPosts = $conn->prepare($sqlPosts);
     if ($stmtPosts) {
+        $stmtPosts->bind_param("i", $current_user_id);
         $stmtPosts->execute();
         $resultPosts = $stmtPosts->get_result();
 
         while ($row = $resultPosts->fetch_assoc()) {
-            // Generate random counts as per requirement for demo
-            $like_count = rand(10, 200);
-            $comment_count = rand(10, 200);
 
-            // Format post_type if null default to 'discussion'
+            // Format post_type (topic) if null default to 'discussion'
             $post_type = $row['post_type'] ? strtolower($row['post_type']) : 'discussion';
-            
+
             // Map to response structure
             $response['feed_posts'][] = [
-                'post_id' => (string)$row['post_id'],
+                'post_id' => (string) $row['post_id'],
                 'post_type' => $post_type,
                 'user_name' => $row['user_name'],
-                'user_avatar_url' => $row['user_avatar_url'], // May be null
+                'user_avatar_url' => $row['user_avatar_url'],
                 'post_title' => $row['post_title'] ?? 'Untitled',
                 'post_content_snippet' => $row['post_content_snippet'],
-                'like_count' => $like_count,
-                'comment_count' => $comment_count,
-                'timestamp' => \DateTime::createFromFormat('Y-m-d H:i:s', $row['timestamp'])->format(\DateTime::ATOM) // ISO-8601
+                'post_image' => $row['image_path'], // New field
+                'like_count' => (int) $row['like_count'],
+                'comment_count' => (int) $row['comment_count'],
+                'is_liked' => (bool) $row['is_liked'],
+                'timestamp' => \DateTime::createFromFormat('Y-m-d H:i:s', $row['timestamp'])->format(\DateTime::ATOM)
             ];
         }
         $stmtPosts->close();
@@ -111,8 +121,8 @@ try {
         $resultEvents = $stmtEvents->get_result();
 
         while ($row = $resultEvents->fetch_assoc()) {
-             $response['upcoming_events'][] = [
-                'event_id' => (string)$row['event_id'],
+            $response['upcoming_events'][] = [
+                'event_id' => (string) $row['event_id'],
                 // Fallback title if skill name is missing
                 'event_title' => $row['event_title'] ? $row['event_title'] . ' Session' : 'Mentorship Session',
                 'mentor_name' => $row['mentor_name'],
