@@ -29,7 +29,6 @@ SELECT
     u.rating,
     u.rating_count,
     u.created_at,
-    u.phone,
     s.name AS skill_name
 FROM users u
 JOIN user_skills us 
@@ -55,8 +54,8 @@ if (!$row = $result->fetch_assoc()) {
  Calculate experience years from created_at
  (simple & demo-safe)
 */
-$createdYear = (int)date("Y", strtotime($row["created_at"]));
-$currentYear = (int)date("Y");
+$createdYear = (int) date("Y", strtotime($row["created_at"]));
+$currentYear = (int) date("Y");
 $experienceYears = max(0, $currentYear - $createdYear);
 
 /*
@@ -67,18 +66,17 @@ $experienceYears = max(0, $currentYear - $createdYear);
 $expertiseList = [$row["skill_name"]];
 
 $data = [
-    "id" => (int)$row["id"],
+    "id" => (int) $row["id"],
     "name" => $row["full_name"],
     "skill" => $row["skill_name"],
     "phone" => $row["phone"],
-    "rating" => (float)$row["rating"],
-    "ratingCount" => (int)$row["rating_count"],
+    "rating" => (float) $row["rating"],
+    "ratingCount" => (int) $row["rating_count"],
     "bio" => "Experienced mentor in " . $row["skill_name"] . " with real-world teaching experience.",
     "experienceYears" => $experienceYears,
     "expertiseList" => $expertiseList,
     "image" => $row["profile_image"],
     "status" => $row["status"],
-    "phone" => $row["phone"]
 ];
 
 sendResponse(true, "Mentor details fetched successfully", $data);

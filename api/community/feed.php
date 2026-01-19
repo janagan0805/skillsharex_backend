@@ -46,7 +46,7 @@ try {
             u.profile_image AS user_avatar_url,
             p.title AS post_title,
             p.image_path,
-            SUBSTRING(p.content, 1, 120) AS post_content_snippet,
+            p.content AS post_content,
             p.created_at AS timestamp,
             COUNT(DISTINCT l.id) AS like_count,
             COUNT(DISTINCT c.id) AS comment_count,
@@ -78,7 +78,7 @@ try {
                 'user_name' => $row['user_name'],
                 'user_avatar_url' => $row['user_avatar_url'],
                 'post_title' => $row['post_title'] ?? 'Untitled',
-                'post_content_snippet' => $row['post_content_snippet'],
+                'post_content' => $row['post_content'],
                 'post_image' => $row['image_path'], // New field
                 'like_count' => (int) $row['like_count'],
                 'comment_count' => (int) $row['comment_count'],

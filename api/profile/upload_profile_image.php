@@ -49,7 +49,6 @@ if ($userId === null) {
 
 
 // Check for upload errors
-// Check for upload errors
 if (!isset($_FILES['image'])) {
     sendResponse(false, "Image key 'image' not found in request");
 }
@@ -69,7 +68,7 @@ if ($_FILES['image']['error'] !== 0) {
     sendResponse(false, $msg);
 }
 
-$allowed = ['image/jpeg', 'image/png'];
+$allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 if (!in_array($_FILES['image']['type'], $allowed)) {
     sendResponse(false, "Invalid image type you f**k");
 
@@ -97,7 +96,8 @@ $stmtUser->close();
 
 // Sanitize full name for filename
 $sanitized_name = preg_replace('/[^a-zA-Z0-9_-]/', '', $fullName);
-$fileName = $sanitized_name . "_" . $userId . ".png";
+$timestamp = time();
+$fileName = $sanitized_name . "_" . $userId . "_" . $timestamp . ".png";
 $targetFile = $targetDir . $fileName;
 
 // Convert and save as PNG
@@ -139,14 +139,14 @@ if ($oldImagePath) {
 
 if ($sourceImage && imagepng($sourceImage, $targetFile)) {
     imagedestroy($sourceImage);
-    
+
     $imagePath = "uploads/profile/" . $fileName;
 
     $stmt = $conn->prepare("UPDATE users SET profile_image=? WHERE id=?");
     $stmt->bind_param("si", $imagePath, $userId);
-    
+
     if ($stmt->execute()) {
-         sendResponse(true, "Image uploaded", [
+        sendResponse(true, "Image uploaded", [
             "image_url" => $imagePath
         ]);
     } else {
