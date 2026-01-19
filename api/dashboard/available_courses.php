@@ -9,6 +9,7 @@ SELECT
     c.image_path,
     c.rating,
     c.rating_count,
+    c.status,
     u.full_name AS mentor_name,
     u.status AS mentor_status
 FROM courses c
@@ -26,13 +27,14 @@ $courses = [];
 
 while ($row = $result->fetch_assoc()) {
     $courses[] = [
-        "id" => (int)$row["course_id"],
+        "id" => (int) $row["course_id"],
         "course_name" => $row["title"],
         "cover_image" => $row["image_path"],
-        "rating" => (float)$row["rating"],
-        "rating_count" => (int)$row["rating_count"],
+        "rating" => (float) $row["rating"],
+        "rating_count" => (int) $row["rating_count"],
         "mentor_name" => $row["mentor_name"],
-        "mentor_online_status" => $row["mentor_status"]
+        "mentor_online_status" => $row["mentor_status"],
+        "status" => $row["status"]
     ];
 }
 
