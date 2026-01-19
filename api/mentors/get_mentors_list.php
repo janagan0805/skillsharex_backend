@@ -10,7 +10,7 @@ SELECT
     u.profile_image,
     u.rating,
     u.rating_count,
-    s.name AS skill_name
+    GROUP_CONCAT(s.name SEPARATOR ',') AS skill_names
 FROM users u
 LEFT JOIN user_skills us 
     ON us.user_id = u.id AND us.type = 'mentor'
@@ -27,7 +27,7 @@ $result = $stmt->get_result();
 $mentors = [];
 
 while ($row = $result->fetch_assoc()) {
-    $mentorId = (int)$row['id'];
+    $mentorId = (int) $row['id'];
 
     if (!isset($mentors[$mentorId])) {
         $mentors[$mentorId] = [
@@ -35,9 +35,9 @@ while ($row = $result->fetch_assoc()) {
             "name" => $row['full_name'],
             "status" => $row['status'],
             "imageUrl" => $row['profile_image'],
-            "rating" => (float)$row['rating'],
-            "rating_count" => (int)$row['rating_count'],
-            "skill" => $row['skill_name'] ?? ""
+            "rating" => (float) $row['rating'],
+            "rating_count" => (int) $row['rating_count'],
+            "skill" => $row['skill_names'] ? explode(',', $row['skill_names']) : []
         ];
     }
 }

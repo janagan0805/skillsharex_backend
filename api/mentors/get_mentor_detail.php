@@ -29,7 +29,7 @@ SELECT
     u.rating,
     u.rating_count,
     u.created_at,
-    s.name AS skill_name
+    GROUP_CONCAT(s.name SEPARATOR ',') AS skill_names
 FROM users u
 JOIN user_skills us 
     ON us.user_id = u.id AND us.type = 'mentor'
@@ -37,7 +37,7 @@ JOIN skills s
     ON s.id = us.skill_id
 WHERE u.id = ?
 AND u.role = 'mentor'
-LIMIT 1
+GROUP BY u.id
 ";
 
 $stmt = $conn->prepare($sql);
@@ -63,16 +63,17 @@ $experienceYears = max(0, $currentYear - $createdYear);
  For now → single skill as list
  (Later you can expand to multiple skills easily)
 */
-$expertiseList = [$row["skill_name"]];
+$expertiseList = $row['skill_names'] ? explode(',', $row['skill_names']) : [];
+$primarySkill = $expertiseList[0] ?? "";
 
 $data = [
     "id" => (int) $row["id"],
     "name" => $row["full_name"],
-    "skill" => $row["skill_name"],
+    "skill" => $primarySkill,
     "phone" => $row["phone"],
     "rating" => (float) $row["rating"],
     "ratingCount" => (int) $row["rating_count"],
-    "bio" => "Experienced mentor in " . $row["skill_name"] . " with real-world teaching experience.",
+    "bio" => "Experienced mentor in " . $primarySkill . " with real-world teaching experience.",
     "experienceYears" => $experienceYears,
     "expertiseList" => $expertiseList,
     "image" => $row["profile_image"],
