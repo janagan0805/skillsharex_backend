@@ -22,7 +22,14 @@ SELECT
     u.id AS mentor_id,
     u.full_name AS mentor_name,
     u.status AS mentor_status,
-    u.profile_image AS mentor_image
+    u.profile_image AS mentor_image,
+    (
+        SELECT s.name 
+        FROM user_skills us 
+        JOIN skills s ON s.id = us.skill_id 
+        WHERE us.user_id = u.id AND us.type = 'mentor' 
+        LIMIT 1
+    ) AS mentor_skill
 FROM courses c
 JOIN users u 
     ON u.id = c.user_id AND u.role = 'mentor'
@@ -37,18 +44,19 @@ $result = $stmt->get_result();
 
 if ($row = $result->fetch_assoc()) {
     sendResponse(true, "Course details fetched successfully", [
-        "id" => (int)$row["id"],
+        "id" => (int) $row["id"],
         "course_name" => $row["title"],
         "description" => $row["description"],
         "cover_image" => $row["image_path"],
-        "rating" => (float)$row["rating"],
-        "rating_count" => (int)$row["rating_count"],
+        "rating" => (float) $row["rating"],
+        "rating_count" => (int) $row["rating_count"],
         "status" => $row["status"],
         "mentor" => [
-            "id" => (int)$row["mentor_id"],
+            "id" => (int) $row["mentor_id"],
             "name" => $row["mentor_name"],
             "status" => $row["mentor_status"],
-            "image" => $row["mentor_image"]
+            "image" => $row["mentor_image"],
+            "skill" => $row["mentor_skill"] ?? ""
         ]
     ]);
 } else {
