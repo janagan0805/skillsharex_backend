@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 18, 2026 at 06:20 AM
+-- Generation Time: May 12, 2026 at 10:00 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,17 +33,19 @@ CREATE TABLE `community_posts` (
   `title` varchar(80) NOT NULL,
   `content` text NOT NULL,
   `topic` varchar(100) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `image_path` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `community_posts`
 --
 
-INSERT INTO `community_posts` (`id`, `user_id`, `title`, `content`, `topic`, `created_at`) VALUES
-(1, 1, 'Test Post Title', 'This is a test post content created via PowerShell script.', 'General', '2026-01-07 17:25:35'),
-(2, 1, 'hello', 'hi bro', 'Android Development', '2026-01-07 18:21:28'),
-(3, 8, 'hi', 'ffghhj', 'Android Development', '2026-01-08 06:52:22');
+INSERT INTO `community_posts` (`id`, `user_id`, `title`, `content`, `topic`, `created_at`, `image_path`) VALUES
+(6, 1, 'Building Scalable Web Apps with Laravel and React in 2026', 'This talk walks through designing a modern, scalable web application using Laravel for the backend and React on the frontend. We will cover API design, authentication, state management, and deployment patterns that work well for small teams. Developers will leave with a practical blueprint they can adapt to their own projects, including common pitfalls and performance tips for production-ready apps.', 'Web Development', '2026-03-29 16:52:12', NULL),
+(7, 8, 'From Code to Content: Practical Generative AI for Everyday Developers', 'Generative AI is no longer just a research topic; it’s a daily productivity tool for developers. This session shows how to use large language models to speed up coding, documentation, testing, and even product copy, with live examples and clear do’s and don’ts. We will also touch on privacy, copyright concerns, and how to safely integrate AI into existing workflows.', 'Career Guidance', '2026-03-29 17:03:39', NULL),
+(8, 1, 'Microservices, Containers, and Cloud: When You Actually Need Them', 'Everyone talks about microservices, but not every project needs them. This talk explains when a monolith is enough, when to break into services, and how containers and cloud platforms fit into the picture. Attendees will see reference architectures, deployment pipelines, and practical guidance on avoiding over-engineering while still preparing for growth.', 'General Discussion', '2026-03-29 17:08:56', NULL),
+(9, 1, 'it will work to guide your self', 'this was more useful for the people make the guidance to work', 'Career Guidance', '2026-04-01 08:02:30', NULL);
 
 -- --------------------------------------------------------
 
@@ -69,15 +71,13 @@ CREATE TABLE `courses` (
 --
 
 INSERT INTO `courses` (`id`, `title`, `description`, `image_path`, `created_at`, `rating`, `rating_count`, `is_featured`, `user_id`, `status`) VALUES
-(1, 'UI/UX Design', 'Learn user research, wireframing, prototyping, and usability testing to design intuitive digital experiences.', 'uploads/courses/uiux.png', '2025-12-31 10:30:34', 4.3, 120, 0, 1, 'inactive'),
+(1, 'UI/UX Design', 'Learn user research, wireframing, prototyping, and usability testing to design intuitive digital experiences.', 'uploads/courses/uiux.png', '2025-12-31 10:30:34', 4.3, 120, 0, 1, 'active'),
 (2, 'Android Development', 'Build modern Android apps using Kotlin, Jetpack Compose, and REST APIs with real-world projects.', 'uploads/courses/android.png', '2025-12-31 10:30:34', 4.6, 200, 0, 1, 'inactive'),
-(3, 'Java Programming', 'Master core Java concepts including OOP, collections, multithreading, and backend fundamentals.', 'uploads/courses/java.png', '2025-12-31 10:30:34', 4.8, 300, 0, 5, 'inactive'),
-(4, 'Graphic Design', 'Create visually appealing designs using color theory, typography, and layout principles.', 'uploads/courses/graphic_design.png', '2025-12-31 10:30:34', 4.0, 0, 0, 8, 'inactive'),
-(5, 'Photoshop', 'Edit photos, design posters, and create social media creatives using Adobe Photoshop tools.', 'uploads/courses/photoshop.png', '2025-12-31 10:30:34', 4.0, 0, 0, 5, 'inactive'),
-(7, 'dummy', 'this is a dummy des', 'uploads/courses/course_696b9e86a797e9.11915114.jpg', '2026-01-17 14:36:54', 4.0, 0, 0, 1, 'active'),
+(4, 'Graphic Design', 'Create visually appealing designs using color theory, typography, and layout principles.', 'uploads/courses/graphic_design.png', '2025-12-31 10:30:34', 4.0, 0, 0, 8, 'active'),
+(7, 'Android app development ', 'Use to develop the android apps ', 'uploads/courses/course_696b9e86a797e9.11915114.jpg', '2026-01-17 14:36:54', 4.0, 0, 0, 1, 'inactive'),
 (8, 'dummy 2', 'testing', 'uploads/courses/course_696ba0284a9b06.77478456.jpg', '2026-01-17 14:43:52', 4.0, 0, 0, 8, 'inactive'),
 (9, 'dummy 3', 'testing', 'uploads/courses/course_696ba060804f49.60601661.jpg', '2026-01-17 14:44:48', 4.0, 0, 0, 8, 'inactive'),
-(10, 'sharing', 'this is a skill sharing description', 'uploads/courses/course_696ba402cd2591.26783183.jpg', '2026-01-17 15:00:18', 4.0, 0, 0, 8, 'active');
+(10, 'skills sharing', 'this is a skill sharing description', 'uploads/courses/course_696ba402cd2591.26783183.jpg', '2026-01-17 15:00:18', 4.0, 0, 0, 8, 'inactive');
 
 -- --------------------------------------------------------
 
@@ -110,28 +110,54 @@ CREATE TABLE `password_resets` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `posts`
+-- Table structure for table `post_comments`
 --
 
-CREATE TABLE `posts` (
+CREATE TABLE `post_comments` (
   `id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `skill_id` int(11) DEFAULT NULL,
-  `post_type` varchar(50) DEFAULT 'Question',
-  `title` varchar(255) DEFAULT NULL,
-  `description` text NOT NULL,
+  `content` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `posts`
+-- Dumping data for table `post_comments`
 --
 
-INSERT INTO `posts` (`id`, `user_id`, `skill_id`, `post_type`, `title`, `description`, `created_at`) VALUES
-(1, 1, 9, 'Question', 'How do I start a career in UI/UX?', 'I am confused between UI design and UX research. Can someone guide me?', '2026-01-02 08:55:11'),
-(2, 2, 7, 'Discussion', 'Best practices for Android Jetpack Compose', 'What are the must-follow architectural practices in modern Android apps?', '2026-01-02 08:55:11'),
-(3, 4, 3, 'Question', 'Which tools are best for graphic designers?', 'Should beginners start with Photoshop or Illustrator?', '2026-01-02 08:55:11'),
-(4, 5, 1, 'Discussion', 'Frontend vs Full Stack', 'Is it better to master frontend first or learn backend alongside?', '2026-01-02 08:55:11');
+INSERT INTO `post_comments` (`id`, `post_id`, `user_id`, `content`, `created_at`) VALUES
+(2, 6, 1, 'anyone and share your opnion', '2026-03-29 16:52:53'),
+(3, 6, 8, 'yeah I have a question, how could you think like that?', '2026-03-29 17:02:32'),
+(4, 6, 8, 'and tell me how many technologies you known?', '2026-03-29 17:02:55'),
+(5, 7, 8, 'Try to ask about it!', '2026-03-29 17:04:01'),
+(6, 7, 1, 'can you tell me about what will be the future technologies in 2050?', '2026-03-29 17:06:43'),
+(7, 6, 1, 'Yeah, I know php, python, react, node, aws, etc.,', '2026-03-29 17:07:21'),
+(8, 8, 1, 'good', '2026-04-01 08:01:37');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `post_likes`
+--
+
+CREATE TABLE `post_likes` (
+  `id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `post_likes`
+--
+
+INSERT INTO `post_likes` (`id`, `post_id`, `user_id`, `created_at`) VALUES
+(4, 6, 1, '2026-03-29 16:52:23'),
+(5, 6, 8, '2026-03-29 17:01:57'),
+(6, 7, 8, '2026-03-29 17:03:42'),
+(8, 7, 1, '2026-03-29 17:06:12'),
+(9, 8, 1, '2026-03-29 17:08:58'),
+(10, 9, 1, '2026-04-01 08:02:35');
 
 -- --------------------------------------------------------
 
@@ -156,12 +182,12 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `title`, `description`, `skill`, `mentor_id`, `date`, `start_time`, `end_time`, `status`) VALUES
-(1, 'Android Basics with Compose', 'Learn Android fundamentals and Jetpack Compose basics', 'Android Development', 1, '2026-01-15', '10:00:00', '11:30:00', ''),
-(2, 'Full Stack Web Roadmap', 'Guidance on becoming a full stack web developer', 'Web Development', 2, '2026-01-16', '14:00:00', '15:00:00', ''),
-(3, 'UI/UX Design Fundamentals', 'Introduction to UI/UX principles and tools', 'UI/UX', 4, '2026-01-17', '16:00:00', '17:30:00', ''),
-(4, 'Career Guidance for Freshers', 'Career planning and interview preparation tips', 'Career Guidance', 5, '2026-01-18', '11:00:00', '12:00:00', ''),
-(5, 'Advanced Android Architecture', 'MVVM, Clean Architecture, and best practices', 'Android Development', 8, '2026-01-19', '18:00:00', '19:30:00', ''),
-(6, 'Resume Building & Mock Interview', 'Improve resume quality and attend mock interviews', 'Career Guidance', 11, '2026-01-20', '09:30:00', '10:30:00', '');
+(1, 'Android Basics with Compose', 'Learn Android fundamentals and Jetpack Compose basics', 'Android Development', 1, '2026-01-15', '10:00:00', '11:30:00', 'LIVE'),
+(2, 'Full Stack Web Roadmap', 'Guidance on becoming a full stack web developer', 'Web Development', 2, '2026-01-16', '14:00:00', '15:00:00', 'UPCOMING'),
+(3, 'UI/UX Design Fundamentals', 'Introduction to UI/UX principles and tools', 'UI/UX', 4, '2026-01-17', '16:00:00', '17:30:00', 'UPCOMING'),
+(4, 'Career Guidance for Freshers', 'Career planning and interview preparation tips', 'Career Guidance', 5, '2026-01-18', '11:00:00', '12:00:00', 'UPCOMING'),
+(5, 'Advanced Android Architecture', 'MVVM, Clean Architecture, and best practices', 'Android Development', 8, '2026-01-19', '18:00:00', '19:30:00', 'COMPLETED'),
+(6, 'Resume Building & Mock Interview', 'Improve resume quality and attend mock interviews', 'Career Guidance', 11, '2026-01-20', '09:30:00', '10:30:00', 'UPCOMING');
 
 -- --------------------------------------------------------
 
@@ -180,11 +206,18 @@ CREATE TABLE `skills` (
 
 INSERT INTO `skills` (`id`, `name`) VALUES
 (7, 'Android'),
+(16, 'bhjmn'),
 (2, 'Data Science'),
 (4, 'Digital Marketing'),
+(15, 'ghjj'),
 (3, 'Graphic Design'),
+(21, 'Graphic designer'),
+(17, 'hkigci'),
 (8, 'IOS Development'),
+(18, 'jgxgk'),
 (12, 'json'),
+(20, 'kycco'),
+(19, 'kyxkgx'),
 (13, 'mongodb'),
 (11, 'node'),
 (14, 'node js'),
@@ -219,15 +252,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `full_name`, `email`, `password`, `created_at`, `role`, `profile_image`, `status`, `rating`, `rating_count`, `phone`) VALUES
-(1, 'Jana', 'janagan1808@gmail.com', '$2y$10$wBRdWG5t.3oi1dlh.CO.uuP7Ez71.mQgNZqf5RmKa81Cy/QDWuk1u', '2025-12-24 15:06:34', 'mentor', 'uploads/profile/Jana_1.png', 'online', 4.5, 120, '9043045940'),
+(1, 'Jana', 'janagan1808@gmail.com', '$2y$10$wBRdWG5t.3oi1dlh.CO.uuP7Ez71.mQgNZqf5RmKa81Cy/QDWuk1u', '2025-12-24 15:06:34', 'mentor', 'uploads/profile/Jana_1_1774849203.png', 'online', 4.5, 120, '9043045940'),
 (2, 'Gowtham', 'gowtham12@gmail.com', '$2y$10$zyvy15rm6dyDPFBnNGSR8uu2lS5cICyUEEBL5REmFMMoadcXXuQAO', '2025-12-24 15:14:04', 'mentor', 'uploads/profile/Gowtham_2.png', 'online', 4.6, 90, ''),
-(4, 'sibi', 'sibi@gmail.com', '$2y$10$tTF.SVGh20w957OEAdM/murxmO82i594/EFZnDiu2M13V4AOiB3rm', '2025-12-25 13:53:02', 'mentor', 'uploads/profile/sibi.png', 'online', 4.2, 60, ''),
-(5, 'Ashwin', 'ash@gmail.com', '$2y$10$36Lp6TREPXdO7TdC7CQJpuZF/VtcdQJuxY5h6PgCTubgR/1qoM8m2', '2025-12-27 04:09:50', 'mentor', 'uploads/profile/ashwin.png', 'offline', 4.0, 90, '6380067133'),
-(8, 'saran', 'sarankarthick2011@gmail.com', '$2y$10$6EKwTZbEjz..8nMi8wyveOLBnkXdGmcTOpUpIhnp.n7w7JaJsZoeW', '2025-12-31 06:28:52', 'mentor', 'uploads/profile/saran_8.png', 'offline', 4.7, 150, '7904780297'),
-(11, 'Dhana', 'asskrvsdhana@gmail.com', '$2y$10$Bd1chlJRFYG9YvMOwMWiu.qX0H2F6up9rWIRKccw/Zl3d.GFCb3Zi', '2026-01-07 04:32:05', 'mentor', NULL, 'online', 4.0, 100, '9342244899'),
-(13, 'Ashok B', 'ashok@gmail.com', '$2y$10$TbUQr1atOoceSFw3gZNEGuPGmtLsKvgROEteMwhGiSb0cfEfSQr4q', '2026-01-09 01:57:03', 'mentor', 'uploads/profile/AshokB_13.png', 'offline', 4.8, 80, '8778910594'),
-(14, 'karthik s', 'karthik@gmail.com', '$2y$10$A/A4LZJEnTVj0/.Tgel.GeRKTBEu7At7IRSwGv25i7NpRoskcjw42', '2026-01-09 02:37:22', 'mentor', 'uploads/profile/karthiks_14.png', 'offline', 4.0, 85, '8794652398'),
-(15, 'dilip', 'dilip@gmail.com', '$2y$10$20.cGkPX9J3EoFlnpMa57.pjlruwQJWN3erLEJBfcXpyXE5pChOKC', '2026-01-09 03:06:11', 'mentor', 'uploads/profile/dilip_15.png', 'online', 4.8, 100, '7985469785');
+(4, 'Dilip', 'dilip@gmail.com', '$2y$10$tTF.SVGh20w957OEAdM/murxmO82i594/EFZnDiu2M13V4AOiB3rm', '2025-12-25 13:53:02', 'mentor', 'uploads/profile/sibi.png', 'online', 4.2, 60, ''),
+(8, 'Saran raj B', 'sarankarthick2011@gmail.com', '$2y$10$jMmLwczn2QpnBQN2z7XlVuwzKvwIxcCMA9Lj.6VOevNCXdbwCQg2a', '2025-12-31 06:28:52', 'mentor', 'uploads/profile/saran_8_1768896779.png', 'offline', 4.7, 150, '7904780297'),
+(14, 'karthik s', 'karthik@gmail.com', '$2y$10$A/A4LZJEnTVj0/.Tgel.GeRKTBEu7At7IRSwGv25i7NpRoskcjw42', '2026-01-09 02:37:22', 'mentor', 'uploads/profile/karthiks_14.png', 'offline', 4.0, 85, '8794652398');
 
 -- --------------------------------------------------------
 
@@ -247,17 +276,17 @@ CREATE TABLE `user_skills` (
 --
 
 INSERT INTO `user_skills` (`id`, `user_id`, `skill_id`, `type`) VALUES
-(11, 1, 9, 'mentor'),
 (12, 2, 7, 'mentor'),
 (13, 4, 3, 'mentor'),
-(14, 5, 1, 'mentor'),
-(49, 8, 7, 'mentor'),
-(50, 8, 10, 'mentor'),
-(51, 8, 12, 'mentor'),
 (57, 14, 10, 'mentor'),
 (58, 14, 11, 'mentor'),
 (59, 14, 13, 'mentor'),
-(60, 15, 14, 'mentor');
+(76, 8, 7, 'mentor'),
+(77, 8, 10, 'mentor'),
+(78, 8, 12, 'mentor'),
+(94, 1, 9, 'mentor'),
+(95, 1, 21, 'mentor'),
+(96, 1, 7, 'mentor');
 
 --
 -- Indexes for dumped tables
@@ -293,12 +322,20 @@ ALTER TABLE `password_resets`
   ADD KEY `email` (`email`);
 
 --
--- Indexes for table `posts`
+-- Indexes for table `post_comments`
 --
-ALTER TABLE `posts`
+ALTER TABLE `post_comments`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `skill_id` (`skill_id`);
+  ADD KEY `post_id` (`post_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `post_likes`
+--
+ALTER TABLE `post_likes`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_like` (`post_id`,`user_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `sessions`
@@ -336,13 +373,13 @@ ALTER TABLE `user_skills`
 -- AUTO_INCREMENT for table `community_posts`
 --
 ALTER TABLE `community_posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `courses`
 --
 ALTER TABLE `courses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `messages`
@@ -354,13 +391,19 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `password_resets`
 --
 ALTER TABLE `password_resets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT for table `posts`
+-- AUTO_INCREMENT for table `post_comments`
 --
-ALTER TABLE `posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+ALTER TABLE `post_comments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `post_likes`
+--
+ALTER TABLE `post_likes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `sessions`
@@ -372,7 +415,7 @@ ALTER TABLE `sessions`
 -- AUTO_INCREMENT for table `skills`
 --
 ALTER TABLE `skills`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -384,7 +427,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_skills`
 --
 ALTER TABLE `user_skills`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- Constraints for dumped tables
@@ -404,11 +447,18 @@ ALTER TABLE `messages`
   ADD CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `posts`
+-- Constraints for table `post_comments`
 --
-ALTER TABLE `posts`
-  ADD CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`skill_id`) REFERENCES `skills` (`id`) ON DELETE SET NULL;
+ALTER TABLE `post_comments`
+  ADD CONSTRAINT `post_comments_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `community_posts` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `post_comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `post_likes`
+--
+ALTER TABLE `post_likes`
+  ADD CONSTRAINT `post_likes_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `community_posts` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `post_likes_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `user_skills`

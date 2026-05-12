@@ -71,7 +71,7 @@ try {
     $mail->addAddress($email);
 
     // Content
-    $resetLink = "http://192.168.31.11:8080/skillsharex_backend/reset_password_form.html?token=" . $token; // Frontend URL
+    $resetLink = "http://10.236.142.111/skillsharex_backend/reset_password_form.html?token=" . $token; // Frontend URL
     $mail->isHTML(true);
     $mail->Subject = 'Password Reset Request';
     $mail->Body = "Click here to reset your password: <a href='$resetLink'>$resetLink</a><br>This link expires in 1 hour.";
